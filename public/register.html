@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>تسجيل</title>
+</head>
+
+<body>
+
+<h2>إنشاء حساب</h2>
+
+<input id="username" placeholder="اسم المستخدم"><br><br>
+<input id="password" type="password" placeholder="كلمة المرور"><br><br>
+<input id="ref" placeholder="كود الدعوة (اختياري)"><br><br>
+
+<button onclick="register()">تسجيل</button>
+
+<script>
+function register() {
+
+  let username = document.getElementById("username").value;
+  let password = document.getElementById("password").value;
+  let ref = document.getElementById("ref").value;
+
+  fetch("/register", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      username: username,
+      password: password,
+      ref: ref   // 🔥 هذا أهم سطر (كان ناقص عندك)
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+
+    if (data.success) {
+      alert("تم إنشاء الحساب");
+
+      localStorage.setItem("user", username);
+
+      window.location.href = "/dashboard.html";
+    } else {
+      alert(data.message);
+    }
+
+  });
+
+}
+</script>
+
+</body>
+</html>

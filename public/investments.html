@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>استثماراتي</title>
+
+<style>
+
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #0f172a;
+  color: white;
+}
+
+.header {
+  background: linear-gradient(90deg,#ff8c00,#ff3c00);
+  padding: 15px;
+  text-align: center;
+}
+
+.container {
+  padding-bottom: 80px;
+}
+
+.card {
+  background: #1e293b;
+  margin: 15px;
+  padding: 15px;
+  border-radius: 15px;
+  animation: fade 0.5s;
+}
+
+@keyframes fade {
+  from {opacity:0; transform:translateY(10px);}
+  to {opacity:1;}
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: #1e293b;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
+}
+
+.footer a {
+  color: white;
+  text-decoration: none;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">📊 استثماراتي</div>
+
+<div class="container" id="list"></div>
+
+<div class="footer">
+<a href="/">🏠</a>
+<a href="/investments.html">📊</a>
+<a href="/withdraw.html">💰</a>
+<a href="/login.html">👤</a>
+</div>
+
+<script>
+
+let user = JSON.parse(localStorage.getItem("user"));
+
+if (!user) {
+  location = "/login.html";
+}
+
+// جلب البيانات من السيرفر
+fetch("/login", {
+  method: "POST",
+  headers: {"Content-Type":"application/json"},
+  body: JSON.stringify({
+    username: user.username,
+    password: user.password
+  })
+})
+.then(res=>res.json())
+.then(data=>{
+
+  let container = document.getElementById("list");
+
+  if(data.user.investments.length === 0){
+    container.innerHTML = "<p style='text-align:center'>🚫 لا يوجد استثمارات</p>";
+    return;
+  }
+
+  data.user.investments.forEach((inv,i)=>{
+    let div = document.createElement("div");
+    div.className = "card";
+
+    div.innerHTML = 
+      <h3>استثمار ${i+1}</h3>
+      <p>💰 ${inv.plan.price} USDT</p>
+      <p>📈 ${inv.plan.profit}% يومي</p>
+    ;
+
+    container.appendChild(div);
+  });
+
+});
+
+</script>
+
+</body>
+</html>

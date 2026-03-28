@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>HashCore</title>
+
+<style>
+
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #0f172a;
+  color: white;
+}
+
+/* هيدر */
+.header {
+  background: linear-gradient(90deg,#ff8c00,#ff3c00);
+  padding: 15px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* معلومات المستخدم */
+.user-box {
+  background: #1e293b;
+  margin: 15px;
+  padding: 15px;
+  border-radius: 15px;
+  text-align: center;
+  animation: fade 1s;
+}
+
+@keyframes fade {
+  from {opacity:0; transform:translateY(10px);}
+  to {opacity:1; transform:translateY(0);}
+}
+
+/* سلايدر */
+.slider img {
+  width: 100%;
+  height: 150px;
+  border-radius: 10px;
+  margin: 10px 0;
+  object-fit: cover;
+}
+
+/* كروت */
+.card {
+  background: #1e293b;
+  margin: 15px;
+  border-radius: 15px;
+  overflow: hidden;
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: scale(1.03);
+}
+
+.card img {
+  width: 100%;
+  height: 130px;
+}
+
+.card-content {
+  padding: 10px;
+}
+
+.btn {
+  background: linear-gradient(90deg,#ff8c00,#ff3c00);
+  border: none;
+  color: white;
+  padding: 10px;
+  width: 100%;
+  border-radius: 10px;
+}
+
+/* إشعار */
+.toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: orange;
+  padding: 10px 20px;
+  border-radius: 10px;
+  display: none;
+}
+
+/* فوتر */
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: #1e293b;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
+}
+
+.footer a {
+  color: white;
+  text-decoration: none;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">🔥 HashCore</div>
+
+<div class="user-box">
+👤 <span id="name"></span><br>
+💰 <span id="bal"></span> USDT
+</div>
+
+<div class="slider">
+<img id="ad" src="https://images.unsplash.com/photo-1621761191319-c6fb62004040">
+</div>
+
+<!-- الخطط -->
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1621761191319-c6fb62004040">
+<div class="card-content">
+<h3>خطة البداية</h3>
+<p>10 USDT - 2%</p>
+<button class="btn" onclick="buy(10,2)">شراء</button>
+</div>
+</div>
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1601597111158-2fceff292cdc">
+<div class="card-content">
+<h3>خطة متوسطة</h3>
+<p>50 USDT - 3%</p>
+<button class="btn" onclick="buy(50,3)">شراء</button>
+</div>
+</div>
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1611078489935-0cb964de46d6">
+<div class="card-content">
+<h3>خطة احتراف</h3>
+<p>100 USDT - 4%</p>
+<button class="btn" onclick="buy(100,4)">شراء</button>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="footer">
+<a href="/">🏠</a>
+<a href="/investments.html">📊</a>
+<a href="/withdraw.html">💰</a>
+<a href="/login.html">👤</a>
+</div>
+
+<script>
+
+let user = JSON.parse(localStorage.getItem("user"));
+
+if (!user) {
+  location = "/login.html";
+}
+
+// عرض البيانات
+document.getElementById("bal").innerText = user.balance;
+document.getElementById("name").innerText = user.username;
+
+// إشعار
+function showToast(msg){
+  let t = document.getElementById("toast");
+  t.innerText = msg;
+  t.style.display = "block";
+
+  setTimeout(()=>{
+    t.style.display = "none";
+  },2000);
+}
+
+// شراء
+function buy(price, profit){
+
+  fetch("/buy", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({
+      username: user.username,
+      plan: { price, profit }
+    })
+  })
+  .then(res=>res.json())
+  .then(data=>{
+    if(data.success){
+      user.balance = data.balance;
+      localStorage.setItem("user", JSON.stringify(user));
+
+      showToast("تم الشراء ✅");
+      setTimeout(()=>location.reload(),1000);
+    }else{
+      showToast(data.message);
+    }
+  });
+
+}
+
+// سلايدر
+let ads = [
+"https://images.unsplash.com/photo-1621761191319-c6fb62004040",
+"https://images.unsplash.com/photo-1518770660439-4636190af475",
+"https://images.unsplash.com/photo-1601597111158-2fceff292cdc"
+];
+
+let i = 0;
+
+setInterval(()=>{
+  i++;
+  if(i >= ads.length) i = 0;
+  document.getElementById("ad").src = ads[i];
+},3000);
+
+</script>
+
+</body>
+</html>

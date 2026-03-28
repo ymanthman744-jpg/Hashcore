@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>شحن</title>
+</head>
+<body>
+
+<h2>شحن الرصيد</h2>
+
+<input id="amount" placeholder="المبلغ"><br><br>
+
+<button onclick="deposit()">شحن</button>
+
+<p id="balance"></p>
+
+<script>
+let user = localStorage.getItem("user");
+
+if (!user) {
+  alert("لازم تسجل أول");
+  window.location.href = "/register.html";
+}
+
+// عرض الرصيد
+fetch("/balance/" + user)
+.then(res => res.json())
+.then(data => {
+  if (data.success) {
+    document.getElementById("balance").innerText = "رصيدك: " + data.balance;
+  }
+});
+
+// شحن
+function deposit() {
+  let amount = document.getElementById("amount").value;
+
+  fetch("/deposit", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      username: user,
+      amount: amount
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      alert("تم الشحن");
+      document.getElementById("balance").innerText = "رصيدك: " + data.balance;
+    } else {
+      alert(data.message);
+    }
+  });
+}
+</script>
+
+</body>
+</html>

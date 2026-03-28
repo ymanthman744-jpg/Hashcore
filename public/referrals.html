@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>الإحالات</title>
+
+<style>
+
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #0f172a;
+  color: white;
+}
+
+.header {
+  background: linear-gradient(90deg,#ff8c00,#ff3c00);
+  padding: 15px;
+  text-align: center;
+}
+
+.box {
+  background: #1e293b;
+  margin: 15px;
+  padding: 15px;
+  border-radius: 15px;
+  text-align: center;
+}
+
+.btn {
+  background: orange;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: #1e293b;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
+}
+
+.footer a {
+  color: white;
+  text-decoration: none;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">👥 الإحالات</div>
+
+<div class="box">
+<h3>👤 <span id="username"></span></h3>
+<p>🔗 رابط الدعوة:</p>
+<p id="link"></p>
+<button class="btn" onclick="copyLink()">نسخ الرابط</button>
+</div>
+
+<div class="box">
+<p>👥 عدد المدعوين: <span id="count">0</span></p>
+</div>
+
+<div class="footer">
+<a href="/">🏠</a>
+<a href="/investments.html">📊</a>
+<a href="/withdraw.html">💰</a>
+<a href="/referrals.html">👥</a>
+</div>
+
+<script>
+
+let user = JSON.parse(localStorage.getItem("user"));
+
+if (!user) {
+  location = "/login.html";
+}
+
+// عرض الاسم
+document.getElementById("username").innerText = user.username;
+
+// رابط الدعوة
+let link = window.location.origin + "/register.html?ref=" + user.username;
+document.getElementById("link").innerText = link;
+
+// نسخ الرابط
+function copyLink(){
+  navigator.clipboard.writeText(link);
+  alert("تم نسخ الرابط ✅");
+}
+
+// جلب عدد المدعوين
+fetch("/getRefs", {
+  method: "POST",
+  headers: {"Content-Type":"application/json"},
+  body: JSON.stringify({ username: user.username })
+})
+.then(res=>res.json())
+.then(data=>{
+  document.getElementById("count").innerText = data.count;
+});
+
+</script>
+
+</body>
+</html>

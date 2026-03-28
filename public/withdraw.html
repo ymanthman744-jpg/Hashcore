@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>سحب</title>
+
+<style>
+body { font-family: Arial; background: #f2f2f2; margin: 0; }
+
+.header {
+  background: orange;
+  color: white;
+  padding: 15px;
+  text-align: center;
+}
+
+.box {
+  background: white;
+  margin: 20px;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+.btn {
+  background: orange;
+  color: white;
+  border: none;
+  padding: 10px;
+  width: 100%;
+  border-radius: 10px;
+}
+
+.history {
+  background: white;
+  margin: 20px;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.item {
+  border-bottom: 1px solid #eee;
+  padding: 10px 0;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">💰 سحب الأرباح</div>
+
+<div class="box">
+<p>رصيدك: <span id="bal">0</span> USDT</p>
+
+<input type="number" id="amount" placeholder="المبلغ (حد أدنى 10)">
+
+<input type="text" id="wallet" placeholder="عنوان المحفظة">
+
+<button class="btn" onclick="withdraw()">سحب</button>
+</div>
+
+<div class="history">
+<h3>📜 سجل السحب</h3>
+<div id="history"></div>
+</div>
+
+<script>
+
+let balance = parseFloat(localStorage.getItem("bal")) || 0;
+let history = JSON.parse(localStorage.getItem("withdraws")) || [];
+
+document.getElementById("bal").innerText = balance.toFixed(2);
+
+// عرض السجل
+let historyDiv = document.getElementById("history");
+
+if(history.length === 0){
+  historyDiv.innerHTML = "<p>لا يوجد عمليات سحب</p>";
+}else{
+  history.forEach(w=>{
+    let div = document.createElement("div");
+    div.className = "item";
+    div.innerHTML = 
+      💸 ${w.amount} USDT <br>
+      🧾 العمولة: ${w.fee} <br>
+      📍 ${w.wallet}
+    ;
+    historyDiv.appendChild(div);
+  });
+}
+
+function withdraw(){
+
+  let amount = parseFloat(document.getElementById("amount").value);
+  let wallet = document.getElementById("wallet").value;
+
+  // تحقق
+  if(!amount || amount <= 0){
+    alert("ادخل مبلغ صحيح ❌");
+    return;
+  }
+
+  if(amount < 10){
+    alert("الحد الأدنى للسحب 10 USDT ❌");
+    return;
+  }
+
+  if(wallet.length < 5){
+    alert("عنوان غير صالح ❌");
+    return;
+  }
+
+  if(amount > balance){
+    alert("رصيدك غير كافي ❌");
+    return;
+  }
+
+  // حساب العمولة
+  let fee = (amount * 0.01).toFixed(2);
+  let finalAmount = amount - fee;
+
+  // خصم
+  balance -= amount;
+  localStorage.setItem("bal", balance);
+
+  // حفظ العملية
+  history.push({
+    amount: finalAmount,
+    fee: fee,
+    wallet: wallet
+  });
+
+  localStorage.setItem("withdraws", JSON.stringify(history));
+
+  alert("تم السحب بنجاح ✅");
+
+  location.reload();
+}
+
+</script>
+
+</body>
+</html>
