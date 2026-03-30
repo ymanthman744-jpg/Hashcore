@@ -1,42 +1,76 @@
 export default function Home() {
   return (
-    <div style={{
-      height: "100vh",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      background: "linear-gradient(135deg, #00c6ff, #6a00ff)",
-      direction: "rtl",
-      fontFamily: "Arial"
-    }}>
+    <div style={{ background: "#0b0f1a", minHeight: "100vh", color: "white", direction: "rtl", fontFamily: "Arial" }}>
 
-      <div style={{ width: "90%", maxWidth: "350px", textAlign: "center" }}>
-        <h1 style={{ color: "white" }}>Hashcore</h1>
+      {/* Header */}
+      <div style={{
+        background: "linear-gradient(90deg, #ff512f, #dd2476)",
+        padding: "15px",
+        textAlign: "center",
+        fontWeight: "bold",
+        fontSize: "20px"
+      }}>
+        🔥 HashCore
+      </div>
 
-        <input placeholder="بريد إلكتروني" style={inputStyle} />
-        <input placeholder="كلمة المرور" type="password" style={inputStyle} />
+      {/* Balance */}
+      <div style={{ padding: "20px", textAlign: "center" }}>
+        <div style={{
+          background: "#111827",
+          padding: "15px",
+          borderRadius: "10px",
+          display: "inline-block"
+        }}>
+          💰 USDT
+        </div>
+      </div>
 
-        <button style={btnStyle}>تسجيل الدخول</button>
+      {/* Image Cards */}
+      <div style={{ padding: "10px" }}>
+        <img src="https://via.placeholder.com/300x150" style={imgStyle}/>
+        <img src="https://via.placeholder.com/300x150" style={imgStyle}/>
+      </div>
+
+      {/* Plan */}
+      <div style={{ padding: "15px" }}>
+        <h3>خطة البداية</h3>
+        <p>10 USDT - 2%</p>
+
+        <button style={btnStyle}>شراء</button>
+      </div>
+
+      {/* Bottom Nav */}
+      <div style={{
+        position: "fixed",
+        bottom: 0,
+        width: "100%",
+        background: "#111",
+        display: "flex",
+        justifyContent: "space-around",
+        padding: "10px"
+      }}>
+        <span>🏠</span>
+        <span>📊</span>
+        <span>💰</span>
+        <span>👤</span>
       </div>
 
     </div>
   );
 }
 
-const inputStyle = {
+const imgStyle = {
   width: "100%",
-  padding: "12px",
-  margin: "8px 0",
-  borderRadius: "8px",
-  border: "none"
+  borderRadius: "10px",
+  marginBottom: "10px"
 };
 
 const btnStyle = {
   width: "100%",
   padding: "12px",
-  marginTop: "10px",
-  borderRadius: "8px",
+  background: "linear-gradient(90deg, #ff512f, #dd2476)",
   border: "none",
-  background: "#00ffd5",
+  borderRadius: "8px",
+  color: "white",
   fontWeight: "bold"
 };
