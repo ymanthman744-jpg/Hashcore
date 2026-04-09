@@ -1,74 +1,80 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-<meta charset="UTF-8">
-<title>تسجيل الدخول</title>
-
-<style>
-body {
-  background: #111;
-  color: white;
-  text-align: center;
-  font-family: Arial;
-}
-input {
-  padding: 10px;
-  margin: 10px;
-  width: 80%;
-}
-button {
-  padding: 10px;
-  background: green;
-  color: white;
-  border: none;
-}
-</style>
-
-</head>
-
-<body>
-
-<h2>🔐 تسجيل الدخول</h2>
-
-<input id="username" placeholder="اسم المستخدم"><br>
-<input id="password" type="password" placeholder="كلمة المرور"><br>
-
-<button onclick="login()">دخول</button>
-
-<p>ما عندك حساب؟ <a href="/register.html">سجل</a></p>
-
-<script>
-
-function login() {
-
-  let username = document.getElementById("username").value;
-  let password = document.getElementById("password").value;
-
-  fetch("/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      username: username,
-      password: password
-    })
-  })
-  .then(res => res.json())
-  .then(data => {
-
-    if (data.success) {
-      localStorage.setItem("user", username);
-      window.location.href = "/dashboard.html";
-    } else {
-      alert("بيانات غلط");
+  <meta charset="UTF-8">
+  <title>تسجيل الدخول</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: #0f172a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: white;
     }
 
-  });
+    .container {
+      background: #1e293b;
+      padding: 30px;
+      border-radius: 15px;
+      width: 320px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
 
-}
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
 
-</script>
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 8px;
+      background: #334155;
+      color: white;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #22c55e;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #16a34a;
+    }
+
+    .link {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>🔐 تسجيل الدخول</h2>
+
+  <input type="text" placeholder="اسم المستخدم">
+  <input type="password" placeholder="كلمة المرور">
+
+  <button>دخول</button>
+
+  <div class="link">
+    ما عندك حساب؟ <a href="register.html" style="color:#38bdf8">سجل الآن</a>
+  </div>
+</div>
 
 </body>
 </html>
