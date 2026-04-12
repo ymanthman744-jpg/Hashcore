@@ -41,8 +41,7 @@ export async function POST(req) {
       user: result.rows[0],
     });
 
-  } catch (err) {
-    console.error(err);
-    return NextResponse.json({ error: "Database error" });
+  catch (err) {
+  console.error("🔥 DB ERROR:", err);
+  return NextResponse.json({ error: err.message });
   }
-}
