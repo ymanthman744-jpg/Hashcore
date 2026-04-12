@@ -1,18 +1,9 @@
-import "./globals.css";
-
-export const metadata = {
-  title: "Hashcore",
-  description: "My app",
-};
-
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html lang="ar">
+      <body>
+        {children}
+      </body>
     </html>
   );
 }
