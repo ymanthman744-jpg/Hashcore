@@ -12,7 +12,6 @@ const pool = new Pool({
 
 export async function POST(req) {
   try {
-    // إنشاء جدول users إذا ما موجود
     await pool.query(`
       CREATE TABLE IF NOT EXISTS users (
         id SERIAL PRIMARY KEY,
@@ -24,15 +23,13 @@ export async function POST(req) {
 
     const body = await req.json();
     const { name, email, password } = body;
-    // ✅ التصحيح هون
+
     if (!name || !email || !password) {
       return NextResponse.json({ error: "Missing fields" });
     }
 
     const result = await pool.query(
-      `INSERT INTO users (name, email, password)
-       VALUES ($1, $2, $3)
-       RETURNING *`,
+      "INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING *",
       [name, email, password]
     );
 
@@ -41,7 +38,8 @@ export async function POST(req) {
       user: result.rows[0],
     });
 
-  catch (err) {
-  console.error("🔥 DB ERROR:", err);
-  return NextResponse.json({ error: err.message });
+  } catch (err) {
+    console.error("🔥 DB ERROR:", err);
+    return NextResponse.json({ error: err.message });
   }
+}
