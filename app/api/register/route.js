@@ -12,9 +12,7 @@ const pool = new Pool({
 
 export async function POST(req) {
   try {
-    await pool.query(`DROP TABLE IF EXISTS users;`);
-
-await pool.query(`
+    await pool.query(`
   CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     name TEXT,
