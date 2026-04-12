@@ -1,7 +1,8 @@
 export default function Home() {
   return (
-    <div style={{ padding: 20 }}>
-      <h1>Hashcore is working ✅</h1>
+    <div style={{textAlign: "center", marginTop: "50px"}}>
+      <h1>Welcome 🚀</h1>
+      <a href="/login">Go to Login</a>
     </div>
   );
 }
