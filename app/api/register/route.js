@@ -24,7 +24,7 @@ export async function POST(req) {
 
   try {
     await db.run(
-      "INSERT INTO users (email, password) VALUES (?, ?)",
+      INSERT INTO users (email, password) VALUES (?, ?),
       [email, password]
     );
 
