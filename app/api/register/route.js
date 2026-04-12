@@ -12,7 +12,8 @@ const pool = new Pool({
 
 export async function POST(req) {
   try {
-    // ✅ لازم يكون بين backticks
+
+    // ✅ مهم جداً: backticks
     await pool.query(
       CREATE TABLE IF NOT EXISTS users (
         id SERIAL PRIMARY KEY,
