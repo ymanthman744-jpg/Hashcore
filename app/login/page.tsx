@@ -1,46 +1,10 @@
-"use client";
-import { useState } from "react";
-
-export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const handleLogin = async () => {
-    const res = await fetch("/api/login", {
-      method: "POST",
-      body: JSON.stringify({ email, password }),
-    });
-
-    const data = await res.json();
-
-    if (data.success) {
-      alert("Login successful");
-    } else {
-      alert(data.error);
-    }
-  };
-
+export default function Login() {
   return (
-    <div style={{ padding: 20 }}>
-      <h1>Login</h1>
-
-      <input
-        type="email"
-        placeholder="Email"
-        onChange={(e) => setEmail(e.target.value)}
-      />
-
-      <br /><br />
-
-      <input
-        type="password"
-        placeholder="Password"
-        onChange={(e) => setPassword(e.target.value)}
-      />
-
-      <br /><br />
-
-      <button onClick={handleLogin}>Login</button>
+    <div style={{ maxWidth: "400px", margin: "auto" }}>
+      <h2>تسجيل الدخول</h2>
+      <input placeholder="Email" style={{ width: "100%", margin: "10px 0" }} />
+      <input placeholder="Password" type="password" style={{ width: "100%", margin: "10px 0" }} />
+      <button style={{ width: "100%" }}>Login</button>
     </div>
   );
 }
