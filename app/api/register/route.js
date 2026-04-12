@@ -12,15 +12,23 @@ const pool = new Pool({
 
 export async function POST(req) {
   try {
+    // 🔥 إنشاء الجدول إذا ما كان موجود
+    await pool.query(
+      CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        name TEXT,
+        email TEXT UNIQUE,
+        password TEXT
+      );
+    );
+
     const body = await req.json();
     const { name, email, password } = body;
 
-    // تحقق بسيط
-    if (!name || !email || !password) {
+    if (!name  !email  !password) {
       return NextResponse.json({ error: "Missing fields" });
     }
 
-    // ادخال المستخدم
     const result = await pool.query(
       "INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING *",
       [name, email, password]
