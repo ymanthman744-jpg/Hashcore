@@ -14,14 +14,14 @@ export async function POST(req) {
   try {
 
     // ✅ مهم جداً: backticks
-    await pool.query(
-      CREATE TABLE IF NOT EXISTS users (
-        id SERIAL PRIMARY KEY,
-        name TEXT,
-        email TEXT UNIQUE,
-        password TEXT
-      );
-    );
+    await pool.query(`
+  CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    name TEXT,
+    email TEXT UNIQUE,
+    password TEXT
+  );
+`);
 
     const body = await req.json();
     const { name, email, password } = body;
