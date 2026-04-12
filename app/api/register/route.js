@@ -14,6 +14,7 @@ export async function POST(req) {
     return NextResponse.json({ error: "Missing data" }, { status: 400 });
   }
 
+  // إنشاء الجدول
   await db.exec(
     CREATE TABLE IF NOT EXISTS users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -24,7 +25,7 @@ export async function POST(req) {
 
   try {
     await db.run(
-      INSERT INTO users (email, password) VALUES (?, ?),
+      "INSERT INTO users (email, password) VALUES (?, ?)",
       [email, password]
     );
 
