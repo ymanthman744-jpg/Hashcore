@@ -11,14 +11,20 @@ export async function POST(req) {
   const { email, password } = await req.json();
 
   if (!email || !password) {
-    return NextResponse.json({ error: "Missing data" }, { status: 400 });
-  await db.exec(
-  CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    email TEXT UNIQUE,
-    password TEXT
-  );
-);
+    return NextResponse.json(
+      { error: "Missing data" },
+      { status: 400 }
+    );
+  }
+
+  // ✅ أهم تصليح: SQL داخل backticks
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      email TEXT UNIQUE,
+      password TEXT
+    );
+  `);
 
   try {
     await db.run(
@@ -27,7 +33,6 @@ export async function POST(req) {
     );
 
     return NextResponse.json({ message: "User created" });
-
   } catch (err) {
     return NextResponse.json(
       { error: "User already exists" },
