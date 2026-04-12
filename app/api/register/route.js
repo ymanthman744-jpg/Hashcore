@@ -8,15 +8,12 @@ export async function POST(req) {
     driver: sqlite3.Database,
   });
 
-  const body = await req.json();
-  const email = body.email;
-  const password = body.password;
+  const { email, password } = await req.json();
 
   if (!email || !password) {
     return NextResponse.json({ error: "Missing data" }, { status: 400 });
   }
 
-  // انتبه هون 👇 backticks مهمين
   await db.exec(
     CREATE TABLE IF NOT EXISTS users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -33,7 +30,7 @@ export async function POST(req) {
 
     return NextResponse.json({ message: "User created" });
 
-  } catch (e) {
+  } catch (err) {
     return NextResponse.json(
       { error: "User already exists" },
       { status: 400 }
