@@ -12,15 +12,13 @@ export async function POST(req) {
 
   if (!email || !password) {
     return NextResponse.json({ error: "Missing data" }, { status: 400 });
-  }
-
   await db.exec(
-    CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      email TEXT UNIQUE,
-      password TEXT
-    );
+  CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT UNIQUE,
+    password TEXT
   );
+);
 
   try {
     await db.run(
