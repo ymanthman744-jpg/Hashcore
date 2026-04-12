@@ -1,13 +1,22 @@
 import { NextResponse } from "next/server";
-import sqlite3 from "sqlite3";
-import { open } from "sqlite";
+import fs from "fs";
+import path from "path";
+
+const filePath = path.join(process.cwd(), "users.json");
+
+// تحميل المستخدمين
+function getUsers() {
+  if (!fs.existsSync(filePath)) return [];
+  const data = fs.readFileSync(filePath, "utf-8");
+  return JSON.parse(data);
+}
+
+// حفظ المستخدمين
+function saveUsers(users) {
+  fs.writeFileSync(filePath, JSON.stringify(users, null, 2));
+}
 
 export async function POST(req) {
-  const db = await open({
-    filename: "./database.db",
-    driver: sqlite3.Database,
-  });
-
   const { email, password } = await req.json();
 
   if (!email || !password) {
@@ -17,26 +26,18 @@ export async function POST(req) {
     );
   }
 
-  // ✅ أهم تصليح: SQL داخل backticks
-  await db.exec(`
-    CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      email TEXT UNIQUE,
-      password TEXT
-    );
-  `);
+  const users = getUsers();
 
-  try {
-    await db.run(
-      "INSERT INTO users (email, password) VALUES (?, ?)",
-      [email, password]
-    );
-
-    return NextResponse.json({ message: "User created" });
-  } catch (err) {
+  const exists = users.find(u => u.email === email);
+  if (exists) {
     return NextResponse.json(
       { error: "User already exists" },
       { status: 400 }
     );
   }
+
+  users.push({ email, password });
+  saveUsers(users);
+
+  return NextResponse.json({ message: "User created" });
 }
