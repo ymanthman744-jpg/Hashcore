@@ -12,7 +12,7 @@ const pool = new Pool({
 
 export async function POST(req) {
   try {
-    // 🔥 إنشاء الجدول إذا ما كان موجود
+    // ✅ لازم يكون بين backticks
     await pool.query(
       CREATE TABLE IF NOT EXISTS users (
         id SERIAL PRIMARY KEY,
@@ -41,9 +41,6 @@ export async function POST(req) {
 
   } catch (err) {
     console.error(err);
-
-    return NextResponse.json({
-      error: "Database error",
-    });
+    return NextResponse.json({ error: "Database error" });
   }
 }
