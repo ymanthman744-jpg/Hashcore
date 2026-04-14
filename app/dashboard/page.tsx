@@ -1,21 +1,29 @@
-import { cookies } from "next/headers";
+"use client";
 
 export default function Dashboard() {
-  const cookieStore = cookies();
-  const userId = cookieStore.get("userId");
+  const handleLogout = async () => {
+    await fetch("/api/logout", {
+      method: "POST",
+    });
 
-  if (!userId) {
-    return (
-      <h2 style={{ textAlign: "center", marginTop: "50px" }}>
-        ❌ لازم تسجل دخول أول
-      </h2>
-    );
-  }
+    window.location.href = "/login";
+  };
 
   return (
     <div style={{ textAlign: "center", marginTop: "50px" }}>
       <h1>🎉 أهلاً بك في الداشبورد</h1>
       <p>أنت مسجل دخول</p>
+
+      <button
+        onClick={handleLogout}
+        style={{
+          marginTop: "20px",
+          padding: "10px 20px",
+          cursor: "pointer",
+        }}
+      >
+        تسجيل الخروج
+      </button>
     </div>
   );
 }
