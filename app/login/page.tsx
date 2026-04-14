@@ -1,32 +1,49 @@
 "use client";
+
 import { useState } from "react";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleLogin = async () => {
-    const res = await fetch("/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
+    setError(""); // تصفير الخطأ
 
-    const data = await res.json();
+    try {
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-    if (data.success) {
-      // ✅ تحويل مباشر للداشبورد
-      window.location.href = "/dashboard";
-    } else {
-      alert(data.error);
+      const data = await res.json();
+
+      if (data.success) {
+        // حفظ المستخدم
+        localStorage.setItem("user", JSON.stringify(data.user));
+
+        // تحويل للدashboard
+        window.location.href = "/dashboard";
+      } else {
+        setError(data.error || "فشل تسجيل الدخول");
+      }
+    } catch (err) {
+      setError("حدث خطأ في الاتصال");
     }
   };
 
   return (
     <div style={{ maxWidth: "400px", margin: "auto" }}>
       <h2>تسجيل الدخول</h2>
+
+      {error && (
+        <p style={{ color: "red", marginBottom: "10px" }}>
+          {error}
+        </p>
+      )}
 
       <input
         placeholder="Email"
