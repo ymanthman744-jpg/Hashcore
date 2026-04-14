@@ -1,9 +1,12 @@
 "use client";
+
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
 
   const handleLogin = async () => {
     const res = await fetch("/api/login", {
@@ -18,6 +21,7 @@ export default function Login() {
 
     if (data.success) {
       alert("تم تسجيل الدخول 🎉");
+      router.push("/dashboard"); // 👈 هاي أهم سطر
     } else {
       alert(data.error);
     }
