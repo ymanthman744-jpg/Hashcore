@@ -1,39 +1,25 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
   const [user, setUser] = useState<any>(null);
-  const router = useRouter();
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
 
-    if (!storedUser) {
-      router.push("/login");
-    } else {
+    if (storedUser) {
       setUser(JSON.parse(storedUser));
+    } else {
+      window.location.href = "/login";
     }
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    router.push("/login");
-  };
+  if (!user) return <p>Loading...</p>;
 
   return (
     <div style={{ textAlign: "center", marginTop: "50px" }}>
       <h1>🎉 أهلاً بك في الداشبورد</h1>
-
-      {user && (
-        <>
-          <p>📧 {user.email}</p>
-        </>
-      )}
-
-      <button onClick={handleLogout} style={{ marginTop: "20px" }}>
-        Logout
-      </button>
+      <p>مرحباً: {user.email}</p>
     </div>
   );
 }
