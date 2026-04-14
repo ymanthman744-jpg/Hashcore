@@ -1,18 +1,40 @@
 import { NextResponse } from "next/server";
+import pkg from "pg";
+
+const { Pool } = pkg;
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+});
 
 export async function POST(req) {
-  const body = await req.json();
-  const { email, password } = body;
+  try {
+    const body = await req.json();
+    const { email, password } = body;
 
-  // fake login
-  if (email === "test@test.com" && password === "1234") {
+    if (!email || !password) {
+      return NextResponse.json({ error: "Missing fields" });
+    }
+
+    const result = await pool.query(
+      "SELECT * FROM users WHERE email = $1 AND password = $2",
+      [email, password]
+    );
+
+    if (result.rows.length === 0) {
+      return NextResponse.json({ error: "Invalid credentials" });
+    }
+
     return NextResponse.json({
       success: true,
-      user: { email }
+      user: result.rows[0],
     });
-  }
 
-  return NextResponse.json({
-    error: "Invalid credentials"
-  });
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json({ error: "Database error" });
+  }
 }
