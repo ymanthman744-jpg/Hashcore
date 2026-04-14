@@ -5,7 +5,7 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
 });
 
-export async function POST(req: Request) {
+export async function POST(req) {
   try {
     const { email, password } = await req.json();
 
@@ -15,21 +15,12 @@ export async function POST(req: Request) {
     );
 
     if (result.rows.length > 0) {
-      return NextResponse.json({
-        success: true,
-        user: result.rows[0],
-      });
+      return NextResponse.json({ success: true });
     } else {
-      return NextResponse.json({
-        success: false,
-        error: "بيانات غير صحيحة",
-      });
+      return NextResponse.json({ error: "بيانات غير صحيحة" });
     }
-  } catch (err: any) {
+  } catch (err) {
     console.error(err);
-    return NextResponse.json({
-      success: false,
-      error: err.message,
-    });
+    return NextResponse.json({ error: "خطأ في السيرفر" });
   }
 }
