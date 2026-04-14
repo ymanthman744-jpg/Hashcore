@@ -1,25 +1,21 @@
-"use client";
-import { useEffect, useState } from "react";
+import { cookies } from "next/headers";
 
 export default function Dashboard() {
-  const [user, setUser] = useState<any>(null);
+  const cookieStore = cookies();
+  const userId = cookieStore.get("userId");
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    } else {
-      window.location.href = "/login";
-    }
-  }, []);
-
-  if (!user) return <p>Loading...</p>;
+  if (!userId) {
+    return (
+      <h2 style={{ textAlign: "center", marginTop: "50px" }}>
+        ❌ لازم تسجل دخول أول
+      </h2>
+    );
+  }
 
   return (
     <div style={{ textAlign: "center", marginTop: "50px" }}>
       <h1>🎉 أهلاً بك في الداشبورد</h1>
-      <p>مرحباً: {user.email}</p>
+      <p>أنت مسجل دخول</p>
     </div>
   );
 }
