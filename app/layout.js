@@ -2,7 +2,6 @@ export default function RootLayout({ children }) {
   return (
     <html lang="ar">
       <body style={{ margin: 0, fontFamily: "sans-serif" }}>
-
         <nav
           style={{
             background: "#111",
@@ -13,7 +12,6 @@ export default function RootLayout({ children }) {
           }}
         >
           <span>🚀 Hashcore</span>
-
           <div>
             <a href="/" style={{ color: "#fff", margin: "10px" }}>Home</a>
             <a href="/login" style={{ color: "#fff", margin: "10px" }}>Login</a>
@@ -24,7 +22,6 @@ export default function RootLayout({ children }) {
         <main style={{ padding: "20px" }}>
           {children}
         </main>
-
       </body>
     </html>
   );
