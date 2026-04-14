@@ -1,11 +1,9 @@
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const router = useRouter();
 
   const handleLogin = async () => {
     const res = await fetch("/api/login", {
@@ -19,13 +17,11 @@ export default function Login() {
     const data = await res.json();
 
     if (data.success) {
-      // 🔥 حفظ المستخدم
+      // نحفظ المستخدم
       localStorage.setItem("user", JSON.stringify(data.user));
 
-      alert("🎉 تم تسجيل الدخول");
-
-      // تحويل للداشبورد
-      router.push("/dashboard");
+      // نروح للداشبورد
+      window.location.href = "/dashboard";
     } else {
       alert(data.error);
     }
