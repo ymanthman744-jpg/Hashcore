@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -20,8 +19,13 @@ export default function Login() {
     const data = await res.json();
 
     if (data.success) {
-      alert("تم تسجيل الدخول 🎉");
-      router.push("/dashboard"); // 👈 هاي أهم سطر
+      // 🔥 حفظ المستخدم
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      alert("🎉 تم تسجيل الدخول");
+
+      // تحويل للداشبورد
+      router.push("/dashboard");
     } else {
       alert(data.error);
     }
