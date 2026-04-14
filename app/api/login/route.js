@@ -10,17 +10,31 @@ export async function POST(req) {
     const { email, password } = await req.json();
 
     const result = await pool.query(
-      "SELECT * FROM users WHERE email = $1 AND password = $2",
-      [email, password]
+      "SELECT * FROM users WHERE email = $1",
+      [email]
     );
 
-    if (result.rows.length > 0) {
-      return NextResponse.json({ success: true });
-    } else {
-      return NextResponse.json({ error: "بيانات غير صحيحة" });
+    if (result.rows.length === 0) {
+      return NextResponse.json({ error: "المستخدم غير موجود" });
     }
+
+    const user = result.rows[0];
+
+    if (user.password !== password) {
+      return NextResponse.json({ error: "كلمة المرور غلط" });
+    }
+
+    // ✅ إنشاء response
+    const response = NextResponse.json({ success: true });
+
+    // ✅ حفظ userId داخل cookie
+    response.cookies.set("userId", user.id, {
+      httpOnly: true,
+      path: "/",
+    });
+
+    return response;
   } catch (err) {
-    console.error(err);
-    return NextResponse.json({ error: "خطأ في السيرفر" });
+    return NextResponse.json({ error: "خطأ بالسيرفر" });
   }
 }
