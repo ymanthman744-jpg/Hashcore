@@ -17,10 +17,7 @@ export default function Login() {
     const data = await res.json();
 
     if (data.success) {
-      // نحفظ المستخدم
-      localStorage.setItem("user", JSON.stringify(data.user));
-
-      // نروح للداشبورد
+      // ✅ تحويل مباشر للداشبورد
       window.location.href = "/dashboard";
     } else {
       alert(data.error);
