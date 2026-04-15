@@ -3,11 +3,10 @@
 import { useState } from "react";
 
 export default function Register() {
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const res = await fetch("/api/register", {
@@ -15,49 +14,40 @@ export default function Register() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ name, email, password }),
+      body: JSON.stringify({ email, password }),
     });
 
-    const data = await res.json();
-
-    if (data.success) {
-      alert("تم التسجيل بنجاح 🎉");
-      window.location.href = "/login";
+    if (res.ok) {
+      alert("تم التسجيل بنجاح");
     } else {
-      alert(data.error || "صار خطأ");
+      alert("خطأ بالتسجيل");
     }
   };
 
   return (
-    <div style={{ maxWidth: "400px", margin: "auto" }}>
-      <h1>إنشاء حساب</h1>
+    <div>
+      <h2>Register</h2>
 
       <form onSubmit={handleSubmit}>
         <input
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          style={{ width: "100%", margin: "10px 0" }}
-        />
-
-        <input
+          type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          style={{ width: "100%", margin: "10px 0" }}
         />
+
+        <br /><br />
 
         <input
           type="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          style={{ width: "100%", margin: "10px 0" }}
         />
 
-        <button type="submit" style={{ width: "100%" }}>
-          Register
-        </button>
+        <br /><br />
+
+        <button type="submit">Register</button>
       </form>
     </div>
   );
