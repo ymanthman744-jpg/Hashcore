@@ -12,6 +12,7 @@ export default function RootLayout({ children }) {
           }}
         >
           <span>🚀 Hashcore</span>
+
           <div>
             <a href="/" style={{ color: "#fff", margin: "10px" }}>Home</a>
             <a href="/login" style={{ color: "#fff", margin: "10px" }}>Login</a>
