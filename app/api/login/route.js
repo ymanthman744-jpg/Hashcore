@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { Pool } from "pg";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -21,17 +21,14 @@ export async function POST(req) {
 
     const user = result.rows[0];
 
-    // ✅ مقارنة كلمة المرور المشفرة
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
       return NextResponse.json({ error: "كلمة المرور غلط" });
     }
 
-    // ✅ إنشاء response
     const response = NextResponse.json({ success: true });
 
-    // ✅ حفظ userId داخل cookie
     response.cookies.set("userId", user.id, {
       httpOnly: true,
       path: "/",
