@@ -1,45 +1,21 @@
 import { NextResponse } from "next/server";
-import pkg from "pg";
 
-const { Pool } = pkg;
-
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false,
-  },
-});
+let users = []; // مؤقت (رح نبدلو بقاعدة بيانات)
 
 export async function POST(req) {
-  try {
-    await pool.query(`
-  CREATE TABLE IF NOT EXISTS users (
-    id SERIAL PRIMARY KEY,
-    name TEXT,
-    email TEXT UNIQUE,
-    password TEXT
-  );
-`);
+  const { email, password } = await req.json();
 
-    const body = await req.json();
-    const { name, email, password } = body;
-
-    if (!name || !email || !password) {
-      return NextResponse.json({ error: "Missing fields" });
-    }
-
-    const result = await pool.query(
-      "INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING *",
-      [name, email, password]
-    );
-
-    return NextResponse.json({
-      success: true,
-      user: result.rows[0],
-    });
-
-  } catch (err) {
-    console.error("🔥 DB ERROR:", err);
-    return NextResponse.json({ error: err.message });
+  if (!email || !password) {
+    return NextResponse.json({ error: "Missing fields" }, { status: 400 });
   }
+
+  const exists = users.find((u) => u.email === email);
+
+  if (exists) {
+    return NextResponse.json({ error: "User already exists" }, { status: 400 });
+  }
+
+  users.push({ email, password });
+
+  return NextResponse.json({ success: true });
 }
