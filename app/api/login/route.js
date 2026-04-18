@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { Pool } from "pg";
+import bcrypt from "bcrypt";
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -20,7 +21,10 @@ export async function POST(req) {
 
     const user = result.rows[0];
 
-    if (user.password !== password) {
+    // ✅ مقارنة كلمة المرور المشفرة
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
       return NextResponse.json({ error: "كلمة المرور غلط" });
     }
 
