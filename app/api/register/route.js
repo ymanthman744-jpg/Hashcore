@@ -1,21 +1,37 @@
 import { NextResponse } from "next/server";
+import { Pool } from "pg";
+import bcrypt from "bcrypt";
 
-let users = []; // مؤقت (رح نبدلو بقاعدة بيانات)
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+});
 
 export async function POST(req) {
-  const { email, password } = await req.json();
+  try {
+    const { email, password } = await req.json();
 
-  if (!email || !password) {
-    return NextResponse.json({ error: "Missing fields" }, { status: 400 });
+    // ✅ تحقق إذا المستخدم موجود
+    const checkUser = await pool.query(
+      "SELECT * FROM users WHERE email = $1",
+      [email]
+    );
+
+    if (checkUser.rows.length > 0) {
+      return NextResponse.json({ error: "المستخدم موجود مسبقاً" });
+    }
+
+    // ✅ تشفير كلمة المرور
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // ✅ إدخال المستخدم
+    await pool.query(
+      "INSERT INTO users (email, password) VALUES ($1, $2)",
+      [email, hashedPassword]
+    );
+
+    return NextResponse.json({ success: true });
+
+  } catch (err) {
+    return NextResponse.json({ error: "خطأ بالسيرفر" });
   }
-
-  const exists = users.find((u) => u.email === email);
-
-  if (exists) {
-    return NextResponse.json({ error: "User already exists" }, { status: 400 });
-  }
-
-  users.push({ email, password });
-
-  return NextResponse.json({ success: true });
 }
