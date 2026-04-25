@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { Pool } from "pg";
-import bcrypt from "bcryptjs";
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -10,32 +9,47 @@ export async function POST(req) {
   try {
     const { email, password } = await req.json();
 
+    if (!email || !password) {
+      return NextResponse.json(
+        { error: "Missing email or password" },
+        { status: 400 }
+      );
+    }
+
     const result = await pool.query(
       "SELECT * FROM users WHERE email = $1",
       [email]
     );
 
     if (result.rows.length === 0) {
-      return NextResponse.json({ error: "المستخدم غير موجود" });
+      return NextResponse.json(
+        { error: "User not found" },
+        { status: 404 }
+      );
     }
 
     const user = result.rows[0];
 
-    const isMatch = await bcrypt.compare(password, user.password);
-
-    if (!isMatch) {
-      return NextResponse.json({ error: "كلمة المرور غلط" });
+    if (user.password !== password) {
+      return NextResponse.json(
+        { error: "Wrong password" },
+        { status: 401 }
+      );
     }
 
-    const response = NextResponse.json({ success: true });
-
-    response.cookies.set("userId", user.id, {
-      httpOnly: true,
-      path: "/",
+    return NextResponse.json({
+      message: "Login successful",
+      user: {
+        id: user.id,
+        email: user.email,
+      },
     });
 
-    return response;
-  } catch (err) {
-    return NextResponse.json({ error: "خطأ بالسيرفر" });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      { error: "Server error" },
+      { status: 500 }
+    );
   }
 }
