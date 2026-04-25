@@ -15,8 +15,13 @@ export async function GET() {
       );
     );
 
-    return NextResponse.json({ message: "Database ready ✅" });
-  } catch (err) {
-    return NextResponse.json({ error: err.message });
+    return NextResponse.json({ message: "Table created" });
+
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      { error: "Setup failed" },
+      { status: 500 }
+    );
   }
 }
